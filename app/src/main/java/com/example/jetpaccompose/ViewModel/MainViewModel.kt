@@ -3,13 +3,14 @@ package com.example.jetpaccompose.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-
-data class CharacteristicsModel(
-    val title: String,
-    val value: String
-)
+import com.example.jetpaccompose.view.components.CharacteristicsModel
 
 class MainViewModel: ViewModel() {
+
+    private val _pictureLink: MutableLiveData<String> = MutableLiveData(
+        "https://avatars.mds.yandex.net/get-mpic/5209485/img_id5426762543151137084.jpeg/9hq"
+    )
+    val pictureLink: LiveData<String> = _pictureLink
 
     private val _article: MutableLiveData<String> = MutableLiveData("Артикул: 7598833")
     val article: LiveData<String> = _article
@@ -42,4 +43,22 @@ class MainViewModel: ViewModel() {
         )
     )
     val characterList: LiveData<List<CharacteristicsModel>> = _characterList
+
+    private val _inWishList: MutableLiveData<Boolean> = MutableLiveData(false)
+    val inWishList: LiveData<Boolean> = _inWishList
+
+    fun inWishListChange() {
+        _inWishList.value?.let {
+            _inWishList.postValue(!it)
+        }
+    }
+
+    private val _inCompareList: MutableLiveData<Boolean> = MutableLiveData(false)
+    val inCompareList: LiveData<Boolean> = _inCompareList
+
+    fun inCompareListChange() {
+        _inCompareList.value?.let {
+            _inCompareList.postValue(!it)
+        }
+    }
 }

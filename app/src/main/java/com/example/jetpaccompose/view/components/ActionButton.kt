@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import com.example.jetpaccompose.ViewModel.MainViewModel
 
 data class ActionButtonModel (
-    val actionId: String,
     val title: String,
     val selectedTitle: String,
     val icon: String? = null,

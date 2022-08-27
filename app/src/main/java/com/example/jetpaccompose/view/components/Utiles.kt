@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 fun IconBox() {
     Box(modifier = Modifier
         .size(18.dp)
-        .background(Color.LightGray))
+        .background(Color.Gray))
 }
 
 @Composable

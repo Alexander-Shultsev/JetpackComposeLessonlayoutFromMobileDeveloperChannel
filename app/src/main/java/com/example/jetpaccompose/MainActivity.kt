@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.jetpaccompose.ViewModel.CharacteristicsModel
 import com.example.jetpaccompose.ViewModel.MainViewModel
 import com.example.jetpaccompose.view.components.*
 import com.example.jetpaccompose.view.theme.JetpackComposeTheme
@@ -57,28 +57,51 @@ fun DefaultPreview() {
 fun ProductScreen(mainViewModel: MainViewModel = viewModel()) {
     val article by mainViewModel.article.observeAsState("")
     val title by mainViewModel.title.observeAsState("")
+    val inWishList by mainViewModel.inWishList.observeAsState(false)
+    val inCompareList by mainViewModel.inCompareList.observeAsState(false)
 
     LazyColumn(content = {
         stickyHeader {
             Toolbar()
         }
-//        item { StartImage() }
-//        item { Text(article, modifier = Modifier
-//            .padding(start = 16.dp, top = 24.dp),
-//            style = TextStyle(color = brawnGrayColor),
-//            fontSize = 12.sp
-//        )}
-//        item { Text(title, modifier = Modifier
-//            .padding(start = 16.dp, top = 16.dp, end = 64.dp),
-//            style = TextStyle(color = Color.Black),
-//            fontSize = 14.sp,
-//            fontWeight = FontWeight(500)
-//        )}
-//        item { RatingRowView() }
-//        item { PriceView(mainViewModel) }
-//        item { CountView(mainViewModel) }
-//        item { HeaderView("Способы получения") }
-//        item { DeliveryPickupView(mainViewModel) }
+        item { StartImage(mainViewModel) }
+        item { Text(article, modifier = Modifier
+            .padding(start = 16.dp, top = 24.dp),
+            style = TextStyle(color = brawnGrayColor),
+            fontSize = 12.sp
+        )}
+        item { Text(title, modifier = Modifier
+            .padding(start = 16.dp, top = 16.dp, end = 64.dp),
+            style = TextStyle(color = Color.Black),
+            fontSize = 14.sp,
+            fontWeight = FontWeight(500)
+        )}
+        item { RatingRowView() }
+        item { PriceView(mainViewModel) }
+        item { CountView(mainViewModel) }
+        item { HeaderView("Способы получения") }
+        item { DeliveryPickupView(mainViewModel) }
+        item {
+            RouteButton(
+                onClick = {},
+                model = RouteButtonModel(
+                    routeId = "AllCharactersScreen",
+                    title = "Наличие в магазинах"
+                )
+            )
+        }
+        item {
+            ActionButton(
+                model = ActionButtonModel(
+                    title = "Добавить в список",
+                    selectedTitle = "Добавлено к список",
+                    isSelected = inWishList
+                ),
+                onClick = { _, _ ->
+                    mainViewModel.inWishListChange()
+                }
+            )
+        }
         item { HeaderView("Характеристики") }
         item { CharacterList(mainViewModel) }
         item {
@@ -93,11 +116,13 @@ fun ProductScreen(mainViewModel: MainViewModel = viewModel()) {
         item {
             ActionButton(
                 model = ActionButtonModel(
-                    actionId = "AddToCompare",
                     title = "Добавить к сравнению",
-                    selectedTitle = "Добавлено к сравнению"
+                    selectedTitle = "Добавлено к сравнению",
+                    isSelected = inCompareList
                 ),
-                onClick = { _, _ -> }
+                onClick = { _, _ ->
+                    mainViewModel.inCompareListChange()
+                }
             )
         }
     },
@@ -113,22 +138,6 @@ fun CharacterList(mainViewModel: MainViewModel) {
         characterList.map {
             CharacterListItem(model = it)
         }
-    }
-}
-
-@Composable
-fun CharacterListItem(model: CharacteristicsModel) {
-    Column {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .height(60.dp),
-            verticalAlignment = Alignment.CenterVertically)
-        {
-            Text(model.title, modifier = Modifier.weight(.6f), style = TextStyle(color = brawnGrayColor))
-            Subtitle5(model.value, modifier = Modifier.weight(.4f))
-        }
-        Divider(color = whiteTwo, thickness = 2.dp)
     }
 }
 
@@ -211,7 +220,7 @@ fun Toolbar() {
 }
 
 @Composable
-fun StartImage() {
+fun StartImage(mainViewModel: MainViewModel) {
     Box(modifier = Modifier
         .background(color = Color.Gray)
         .height(300.dp)
