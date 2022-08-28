@@ -1,10 +1,12 @@
 package com.example.jetpaccompose.view.components
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
@@ -16,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import java.lang.Exception
 
 sealed class ImageErrorStatus {
@@ -34,7 +38,7 @@ sealed class ImageViewState {
 fun ImageView(
     imageUrl: String?,
     modifier: Modifier = Modifier,
-    imageModifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier.fillMaxSize(),
     contentScale: ContentScale = ContentScale.Fit,
     contentDescription: String? = null,
     loader: @Composable (() -> Unit)? = null,
@@ -77,5 +81,27 @@ fun loadImage(url: String?): MutableState<ImageViewState> {
         mutableStateOf(ImageViewState.Loading)
     }
 
-    return
+    if (url.isNullOrBlank()) {
+        imageViewState.value = ImageViewState.Error(ImageErrorStatus.NoImageProvider)
+    } else {
+        Picasso.get().load(url).into(object: Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                val image = bitmap ?: run {
+                    imageViewState.value = ImageViewState.Error(ImageErrorStatus.NoImageLoaded)
+                    return@onBitmapLoaded
+                }
+
+                imageViewState.value = ImageViewState.Display(image)
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                e?.printStackTrace()
+                imageViewState.value = ImageViewState.Error(ImageErrorStatus.RemoteError(e))
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+        })
+    }
+
+    return imageViewState
 }

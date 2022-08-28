@@ -221,11 +221,13 @@ fun Toolbar() {
 
 @Composable
 fun StartImage(mainViewModel: MainViewModel) {
-    Box(modifier = Modifier
-        .background(color = Color.Gray)
-        .height(300.dp)
-        .fillMaxWidth()
-    )
+    val image by mainViewModel.pictureLink.observeAsState()
+
+    ImageView(
+        imageUrl = image,
+        modifier = Modifier
+            .height(260.dp)
+            .background(Color.White))
 }
 
 @Composable
