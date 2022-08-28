@@ -228,6 +228,7 @@ fun StartImage(mainViewModel: MainViewModel) {
         modifier = Modifier
             .height(260.dp)
             .background(Color.White))
+
 }
 
 @Composable
