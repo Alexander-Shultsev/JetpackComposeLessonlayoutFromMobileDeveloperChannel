@@ -1,6 +1,7 @@
 package com.example.jetpaccompose.view.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Image
+import com.example.jetpaccompose.R
 import com.example.jetpaccompose.ViewModel.MainViewModel
 
 data class ActionButtonModel (
@@ -46,11 +50,11 @@ fun ActionButton(
         .background(Color.White)
     ) {
         Card(modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                    isSelected = !isSelected
-                    onClick.invoke(model, !isSelected)
-                },
+            .fillMaxSize()
+            .clickable {
+                isSelected = !isSelected
+                onClick.invoke(model, !isSelected)
+            },
             backgroundColor = if (isSelected) Color.White else Color.LightGray,
             shape = RoundedCornerShape(4.dp),
             border = if (isSelected) BorderStroke(2.dp, Color.Black) else null,
@@ -66,9 +70,13 @@ fun ActionButton(
                         .weight(1f))
 
                 if (isSelected) {
-                    IconBox2()
+                    Image(
+                        painterResource(id = R.drawable.ic_baseline_playlist_add_check_24),
+                        contentDescription = "add elem")
                 } else {
-                    IconBox()
+                    Image(
+                        painterResource(id = R.drawable.ic_baseline_playlist_add_24),
+                        contentDescription = "add elem")
                 }
             }
         }

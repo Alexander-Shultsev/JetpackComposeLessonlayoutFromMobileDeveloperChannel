@@ -1,5 +1,7 @@
 package com.example.jetpaccompose
 
+import android.graphics.Bitmap
+import android.graphics.Picture
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -7,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +20,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -197,10 +202,11 @@ fun CountView(mainViewModel: MainViewModel) {
             Subtitle5("Рассчитать количество")
             Subtitle6("В наличии: $countProduct")
         }
-        Box(
+        Image(
+            painterResource(id = R.drawable.ic_baseline_keyboard_arrow_right_24),
+            contentDescription = "arrow right",
             modifier = Modifier
-                .size(12.dp)
-                .background(brawnGrayColor))
+                .size(16.dp))
     }
 }
 
@@ -208,14 +214,29 @@ fun CountView(mainViewModel: MainViewModel) {
 fun Toolbar() {
     Row(
         modifier = Modifier
-            .height(44.dp)
+            .height(56.dp)
             .fillMaxWidth()
+            .padding(16.dp)
             .background(color = MaterialTheme.colors.background),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("Н")
+        Image(
+            painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+            contentDescription = "Back button",
+            modifier = Modifier
+                .clickable {
+
+                })
+
         Spacer(modifier = Modifier.weight(1f))
-        Text("М")
+
+        Image(
+            painterResource(id = R.drawable.ic_baseline_more_vert_24),
+            contentDescription = "More button",
+            modifier = Modifier
+                .clickable {
+
+                })
     }
 }
 
@@ -251,33 +272,49 @@ fun PriceView(mainViewModel: MainViewModel) {
         modifier = Modifier
             .height(80.dp)
             .fillMaxWidth()) {
-            Text("123 1233", modifier = Modifier
+        Text(
+            "123 1233", modifier = Modifier
                 .padding(start = 16.dp),
-                style = TextStyle(color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Medium))
-            Text("руб/шт", modifier = Modifier
+            style = TextStyle(color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Medium)
+        )
+        Text(
+            "руб/шт", modifier = Modifier
                 .padding(start = 4.dp)
                 .weight(1f),
-                style = TextStyle(color = brawnGrayColor, fontSize = 12.sp, fontWeight = FontWeight.Medium))
+            style = TextStyle(
+                color = brawnGrayColor,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
+            )
+        )
 
+        Button(
+            onClick = {
+                mainViewModel.addProductInCart()
+            },
+            modifier = Modifier
+                .width(160.dp)
+                .height(48.dp)
+                .padding(end = 16.dp),
+            shape = RoundedCornerShape(4.dp)
+        ) {
             if (countProductsInCart == 0) {
-                Button(onClick = {
-                    mainViewModel.addProductInCart()
-                },
-                modifier = Modifier
-                    .width(160.dp)
-                    .height(48.dp)
-                    .padding(end = 16.dp),
-                shape = RoundedCornerShape(4.dp)
-                ) {
-                    Text("В корзину", style = TextStyle (
+                Text(
+                    "В корзину", style = TextStyle(
                         color = Color.White,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp))
-                }
+                        fontSize = 16.sp
+                    )
+                )
             } else {
-                Text(text = "В корзину [$countProductsInCart]", modifier = Modifier
-                    .width(160.dp)
-                    .height(48.dp))
+                Text(
+                    "В корзине [$countProductsInCart]", style = TextStyle(
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp
+                    )
+                )
             }
+        }
     }
 }
